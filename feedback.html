@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zooflix</title>
+    <link rel="stylesheet" href="design.css">
+</head>
+<body>
+    <nav>
+
+        <img src="Images/zooflix-high-resolution-logo-transparent.png" alt="">
+        <ul>
+          <li><a href="index.html/#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+    
+          <li>
+            <a href="#companions">Companions <i class="fa fa-angle-down" style="font-size:24px"></i></a>
+            <ul class="dropdown">
+              <li><a href="#elephant">Elephant</a></li>
+              <li><a href="#eagle">Eagle</a></li>
+              <li><a href="#wolf">Wolf</a></li>
+              <li><a href="#whale">Whale</a></li>
+            </ul>
+          </li>
+    
+          <!-- <li><a href="#feedback">Feedback</a></li> -->
+          <li><a href="#book-tickets">Contact</a></li>
+          <li><a href="index.html">Main Page</a></li>
+        </ul>
+    
+      </nav>
+
+    <section id="feedback">
+      <h2>Leave Us Your Feedback</h2>
+      <form id="feedback-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email">
+          <label for="message">Message:</label>
+          <textarea id="message" name="message"></textarea>
+          <button type="submit">Send Feedback</button>
+          <div id="notification">
+            Thank You for your Feedback!
+          </div>
+      </form>
+    </section>
+
+    <script src="feedback.js"></script>
+    
+</body>
+</html>
