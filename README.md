@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# Zooflix 2.0
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Zooflix is being rebuilt as a focused, accessible animal encyclopedia using Next.js App Router, React and TypeScript.
 
-## Available Scripts
+## Local development
 
-In the project directory, you can run:
+```bash
+npm install
+npm run dev
+```
 
-### `npm start`
+Open [http://localhost:3000](http://localhost:3000).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+For production metadata, set `NEXT_PUBLIC_SITE_URL` to the canonical public origin before building. Do not use a preview URL for this value.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-public-origin.example npm run build
+```
 
-### `npm test`
+## Foundation architecture
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `app/` contains App Router pages, layouts and SEO route handlers.
+- `components/` contains accessible, reusable UI components.
+- `lib/animals/` contains typed animal records and the testable data-access layer.
+- `public/animals/` contains reusable image assets carried forward from Zooflix 1.0.
 
-### `npm run build`
+Animal records are validated with Zod at the repository boundary. References, image attribution, conservation assessments and field-level provenance are stored with the records where available. Unknown scientific information remains absent rather than being replaced with placeholders.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Routes and discovery
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `/species` provides URL-driven search, filters, sorting and pagination.
+- `/species/[slug]` provides server-rendered species detail pages.
+- `/categories` and `/categories/[category]` provide category exploration from the validated dataset.
+- `/habitats` and `/habitats/[habitat]` provide habitat collections derived from recorded habitat values.
+- `/sitemap.xml` and `/robots.txt` expose public URLs only when `NEXT_PUBLIC_SITE_URL` is configured.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Verification commands
 
-### `npm run eject`
+```bash
+npm run lint
+npm run typecheck
+npm test -- --reporter=verbose
+npm run test:e2e
+npm run build
+git diff --check
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The browser suite uses Playwright with Chromium desktop and Pixel 5 mobile projects. It is a focused smoke suite, not a complete WCAG audit or device matrix.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment notes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+For a later, explicitly approved manual preview, use an existing isolated Netlify site and its site ID. Set `NEXT_PUBLIC_SITE_URL` in the `deploy-preview` build context to the canonical production origin; it is a public URL, not a secret, and must not be set to a temporary preview URL. From this branch, the safe draft command is:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npx netlify deploy --build --context deploy-preview --site <SITE_ID> --alias zooflix-2-foundation-preview
+```
 
-## Learn More
+The command intentionally omits `--prod`. After deployment, check the returned draft URL at `/`, `/species`, a species URL, a category URL, a habitat URL, `/sitemap.xml` and `/robots.txt`. Confirm the preview response has `X-Robots-Tag: noindex` and does not use the preview host as its canonical origin. If that header is absent, stop and enable Netlify preview protection/no-index settings before sharing the URL. Delete the draft deploy after review when appropriate. Do not run this command until the target site and environment scope are explicitly approved.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The project has `build`, `start` and `dev` scripts required for a standard Next.js Node deployment. Netlify configuration is not present in this branch and the existing production site is not connected to GitHub by this work. A later preview should be created manually after confirming the site’s build settings, Node version, lockfile usage and `NEXT_PUBLIC_SITE_URL` environment variable.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Netlify’s current Next.js integration supports App Router, static generation, server rendering and `next/image`, but a real preview deployment is still required to verify the account-specific site configuration and public-origin value.
 
-### Code Splitting
+## Known limitations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- The dataset is intentionally small and remains limited to the currently curated records.
+- Scientific claims, conservation assessments and image licences require ongoing manual review; structural validation does not prove biological accuracy.
+- No production dependency vulnerabilities were found in the latest production-only audit. Five high-severity development-tool findings remain in the ESLint dependency chain; npm’s proposed remediation is a breaking downgrade, so it was not applied blindly.
+- No Lighthouse score is claimed. Performance findings are based on Next.js build output, browser smoke runs and source inspection.
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This branch contains the release-candidate preparation work. Netlify and production deployment are intentionally not connected.

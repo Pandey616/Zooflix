@@ -7,9 +7,13 @@
 
 # testing
 /coverage
+/test-results
 
 # production
 /build
+/.next
+/out
+*.tsbuildinfo
 
 # misc
 .DS_Store
